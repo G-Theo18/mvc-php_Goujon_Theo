@@ -4,9 +4,9 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `billets` (
   `id` int(11) NOT NULL,
-  `titre` varchar(255) NOT NULL,
-  `contenu` text NOT NULL,
-  `date_creation` datetime NOT NULL
+  `title` varchar(255) NOT NULL,
+  `content` text NOT NULL,
+  `creation_date` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `billets` (`id`, `titre`, `contenu`, `date_creation`) VALUES

@@ -32,4 +32,4 @@ function getPosts() {
 
     return $posts;
 }
-?>
+
