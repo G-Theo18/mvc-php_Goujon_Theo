@@ -8,9 +8,8 @@ function getPosts() {
     }
 
     $statement = $database->query(
-        "SELECT id, titre AS title, contenu AS content, DATE_FORMAT(date_creation, '%d/%m/%Y à %Hh%imin%ss') AS french_creation_date FROM posts ORDER BY date_creation DESC LIMIT 0, 5"
+        "SELECT id, title, content, DATE_FORMAT(creation_date, '%d/%m/%Y à %Hh%imin%ss') AS french_creation_date FROM posts ORDER BY creation_date DESC LIMIT 0, 5"
     );
-
     $posts = [];
     while (($row = $statement->fetch())) {
         $post = [
