@@ -27,11 +27,11 @@ function getPosts() {
 
     $posts = [];
     while ($row = $statement->fetch()) {
-        $posts[] = [
-            'identifier' => $row['id'],
+        $post = [
             'title' => $row['title'],
             'french_creation_date' => $row['french_creation_date'],
             'content' => $row['content'],
+            'identifier' => $row['id'],
         ];
     }
 
@@ -60,28 +60,4 @@ function getPost($identifier) {
         'french_creation_date' => $row['french_creation_date'],
         'content' => $row['content'],
     ];
-}
-
-function getComments($identifier) {
-    $database = dbConnect();
-
-    $statement = $database->prepare(
-        "SELECT id, author, comment,
-        DATE_FORMAT(comment_date, '%d/%m/%Y à %Hh%imin%ss') AS french_creation_date 
-        FROM comments 
-        WHERE post_id = ? 
-        ORDER BY comment_date DESC"
-    );
-    $statement->execute([$identifier]);
-
-    $comments = [];
-    while ($row = $statement->fetch()) {
-        $comments[] = [
-            'author' => $row['author'],
-            'french_creation_date' => $row['french_creation_date'],
-            'comment' => $row['comment'],
-        ];
-    }
-
-    return $comments;
 }
