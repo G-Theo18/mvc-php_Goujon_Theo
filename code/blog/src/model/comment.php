@@ -1,20 +1,31 @@
 <?php
 
-function getComments(string $post)
+class Comment
+{
+    public string $author;
+    public string $frenchCreationDate;
+    public string $comment;
+}
+
+function getComments(string $post): array
 {
     $database = commentDbConnect();
     $statement = $database->prepare(
-        "SELECT id, author, comment, DATE_FORMAT(comment_date, '%d/%m/%Y à %Hh%imin%ss') AS french_creation_date FROM comments WHERE post_id = ? ORDER BY comment_date DESC"
+        "SELECT id, author, comment, DATE_FORMAT(comment_date, '%d/%m/%Y à %Hh%imin%ss') 
+        AS french_creation_date 
+        FROM comments 
+        WHERE post_id = ? 
+        ORDER BY comment_date DESC"
     );
     $statement->execute([$post]);
 
     $comments = [];
-    while (($row = $statement->fetch())) {
-        $comment = [
-            'author' => $row['author'],
-            'french_creation_date' => $row['french_creation_date'],
-            'comment' => $row['comment'],
-        ];
+
+    while ($row = $statement->fetch()) {
+        $comment = new Comment();
+        $comment->author = $row['author'];
+        $comment->frenchCreationDate = $row['french_creation_date'];
+        $comment->comment = $row['comment'];
 
         $comments[] = $comment;
     }
@@ -22,7 +33,7 @@ function getComments(string $post)
     return $comments;
 }
 
-function createComment(string $post, string $author, string $comment)
+function createComment(string $post, string $author, string $comment): bool
 {
     $database = commentDbConnect();
     $statement = $database->prepare(
@@ -33,9 +44,8 @@ function createComment(string $post, string $author, string $comment)
     return ($affectedLines > 0);
 }
 
-function commentDbConnect()
+function commentDbConnect(): PDO
 {
     $database = new PDO('mysql:host=localhost;dbname=blog;charset=utf8', 'blog', 'password');
-
     return $database;
 }
