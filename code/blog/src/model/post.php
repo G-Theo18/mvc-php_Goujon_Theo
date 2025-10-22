@@ -1,6 +1,9 @@
 <?php
 
-require_once('src/lib/database.php');
+namespace Application\Model\Post;
+
+use Application\Lib\DatabaseConnection;
+use PDO;
 
 class Post
 {
@@ -16,10 +19,13 @@ class PostRepository
 
     public function getPost(string $identifier): Post
     {
-        $statement = $this->connection->getConnection()->prepare("SELECT id, title, content, DATE_FORMAT(creation_date, '%d/%m/%Y à %Hh%imin%ss') AS french_creation_date FROM posts WHERE id = ?"
+        $statement = $this->connection->getConnection()->prepare(
+            "SELECT id, title, content, DATE_FORMAT(creation_date, '%d/%m/%Y à %Hh%imin%ss') AS french_creation_date
+             FROM posts
+             WHERE id = ?"
         );
         $statement->execute([$identifier]);
-        $row = $statement->fetch();
+        $row = $statement->fetch(PDO::FETCH_ASSOC);
 
         $post = new Post();
         $post->title = $row['title'];
@@ -32,16 +38,20 @@ class PostRepository
 
     public function getPosts(): array
     {
-        $statement = $this->connection->getConnection()->query("SELECT id, title, content, DATE_FORMAT(creation_date, '%d/%m/%Y à %Hh%imin%ss') AS french_creation_date FROM posts ORDER BY creation_date DESC LIMIT 0, 5");
-        $posts = [];
+        $statement = $this->connection->getConnection()->query(
+            "SELECT id, title, content, DATE_FORMAT(creation_date, '%d/%m/%Y à %Hh%imin%ss') AS french_creation_date
+             FROM posts
+             ORDER BY creation_date DESC
+             LIMIT 0, 5"
+        );
 
-        while ($row = $statement->fetch()) {
+        $posts = [];
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $post = new Post();
             $post->title = $row['title'];
             $post->frenchCreationDate = $row['french_creation_date'];
             $post->content = $row['content'];
             $post->identifier = $row['id'];
-
             $posts[] = $post;
         }
 
